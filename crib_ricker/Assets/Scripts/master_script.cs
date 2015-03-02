@@ -11,11 +11,6 @@ public class master_script : MonoBehaviour {
 		score = 0;
 		paddles = 5;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		add_paddle (1);
-	}
 
 	// Add number of paddles
 	void add_paddle (int addition) {
