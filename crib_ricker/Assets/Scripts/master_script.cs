@@ -8,14 +8,16 @@ public class master_script : MonoBehaviour {
 	public Text paddles_text;
 
 	public GameObject paddle;
+	private GameObject paddle_temp;
 
 	public int score;
 	public int paddles;
 	private int status;
 
 	private Vector2 mouse_down;
-	private Vector2 mouse_up;
+	private Vector2 mouse_pos;
 	private float angle;
+	private Vector2 v2;
 
 	// Use this for initialization
 	void Start () {
@@ -26,24 +28,33 @@ public class master_script : MonoBehaviour {
 	}
 
 	void Update () {
-		if (Input.GetMouseButtonDown(0)) {
+		if (Input.GetMouseButtonDown (0)) {
 			// get position of the mouse on click
-			mouse_down = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Debug.Log ("mouse_down" + mouse_down);
+			if (paddles > 0) {
+				mouse_down = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+//				Debug.Log ("mouse_down" + mouse_down);
+				paddle_temp = Instantiate (paddle, mouse_down, Quaternion.identity) as GameObject;
+			}
 		}
-		if (Input.GetMouseButtonUp(0)) {
-			if (paddles > 0 ) {
-				// get position of the mouse on release
-				mouse_up = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				Debug.Log ("mouse_up" + mouse_up);
+		if (Input.GetMouseButton (0)) {
+			if (paddles > 0) {
+				// get position of the mouse
+				mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 				// calculate the angle between down press, and release
-				//	(this is not working as I expected)
-				angle = Vector2.Angle(mouse_down,mouse_up);
-				Debug.Log ("angle: " + angle);
+				//	then convert that to degree (-180 - 180)
+				v2 = mouse_pos - mouse_down;
+				angle = Mathf.Atan2 (v2.y, v2.x) * Mathf.Rad2Deg;
+//				Debug.Log ("angle: " + angle);
+				// update the angle of the current paddle being placed.
+				if (gameObject != null) {
+					paddle_temp.transform.eulerAngles = new Vector3 (0, 0, angle);
+				}
+			}
+		}
+		if (Input.GetMouseButtonUp (0)) {
+			if (paddles > 0) {
 				// remove a paddle, because we placed one
 				subtract_paddle (1);
-				// instantiate the paddle
-				Instantiate (paddle,mouse_up,Quaternion.identity);
 			}
 		}
 	}
