@@ -5,6 +5,7 @@ public class master_script : MonoBehaviour {
 
 	public int score;
 	public int paddles;
+	private int status;
 
 	// Use this for initialization
 	void Start () {
@@ -31,4 +32,12 @@ public class master_script : MonoBehaviour {
 	void subtract_points (int subtraction) {
 		score -= subtraction;
 	}
+
+	// Game Over
+	void die (bool dead) {
+		if (dead == true) {
+			Debug.Log("Game_Over");
+		}
+	}
+
 }

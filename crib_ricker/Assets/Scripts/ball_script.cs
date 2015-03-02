@@ -24,4 +24,12 @@ public class ball_script : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerEnter2D (Collider2D other) {
+		// Increment paddle and score, then destroy other
+		if (other.gameObject.tag == "death_zone") {
+			master.gameObject.SendMessage ("die", true);
+			Destroy (gameObject);
+		}
+	}
+
 }
