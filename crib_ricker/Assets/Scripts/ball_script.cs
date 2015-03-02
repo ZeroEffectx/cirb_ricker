@@ -22,6 +22,10 @@ public class ball_script : MonoBehaviour {
 			master.gameObject.SendMessage ("add_paddle", 1);
 			Destroy (other.gameObject);
 		}
+		// decrement paddle, then destroy other
+		if (other.gameObject.tag == "paddle") {
+			Destroy (other.gameObject);
+		}
 	}
 
 	void OnTriggerEnter2D (Collider2D other) {
@@ -31,5 +35,4 @@ public class ball_script : MonoBehaviour {
 			Destroy (gameObject);
 		}
 	}
-
 }
