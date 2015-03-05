@@ -19,6 +19,9 @@ public class master_script : MonoBehaviour {
 	private float angle;
 	private Vector2 v2;
 
+	public GameObject win_menu;
+	public GameObject lose_menu;
+
 	// Use this for initialization
 	void Start () {
 		score = 0;
@@ -32,7 +35,6 @@ public class master_script : MonoBehaviour {
 			// get position of the mouse on click
 			if (paddles > 0) {
 				mouse_down = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-//				Debug.Log ("mouse_down" + mouse_down);
 				paddle_temp = Instantiate (paddle, mouse_down, Quaternion.identity) as GameObject;
 			}
 		}
@@ -40,12 +42,11 @@ public class master_script : MonoBehaviour {
 			if (paddles > 0) {
 				// get position of the mouse
 				mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-				// calculate the angle between down press, and release
-				//	then convert that to degree (-180 - 180)
+				// calculate the angle between down press, and mouse position
+				//	then convert that to degree (-180 to 180)
 				v2 = mouse_pos - mouse_down;
 				angle = Mathf.Atan2 (v2.y, v2.x) * Mathf.Rad2Deg;
-//				Debug.Log ("angle: " + angle);
-				// update the angle of the current paddle being placed.
+				// update the rotation of the current paddle being placed to angle value.
 				if (gameObject != null) {
 					paddle_temp.transform.eulerAngles = new Vector3 (0, 0, angle);
 				}
@@ -56,6 +57,24 @@ public class master_script : MonoBehaviour {
 				// remove a paddle, because we placed one
 				subtract_paddle (1);
 			}
+		}
+	}
+
+	// pause time, maybe add pause sound?
+	public void pause (GameObject pause_menu) {
+		// check and set timescale accordingly
+		if (Time.timeScale == 1.0f) {
+			Time.timeScale = 0.0f;
+		} else {
+			Time.timeScale = 1.0f;
+		}
+		// check pause_menu active status and set accordingly
+		//  this is done in separate check in case somehow the
+		//  timescale and pause_menu display ever got out of sync
+		if (pause_menu.activeSelf) {
+			pause_menu.SetActive (false);
+		} else {
+			pause_menu.SetActive (true);
 		}
 	}
 	
@@ -98,6 +117,20 @@ public class master_script : MonoBehaviour {
 		if (dead == true) {
 			Debug.Log("Game_Over");
 		}
+	}
+
+	// win
+	void win () {
+		// set timescale to 0
+		Time.timeScale = 0.0f;
+		win_menu.SetActive (true);
+	}
+
+	// lose
+	void lose () {
+		// set timescale to 0
+		Time.timeScale = 0.0f;
+		lose_menu.SetActive (true);
 	}
 
 }

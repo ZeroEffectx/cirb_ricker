@@ -4,6 +4,7 @@ using System.Collections;
 public class ball_script : MonoBehaviour {
 
 	private GameObject master;
+	private float constant_speed = 1;
 
 	// Use this for initialization
 	void Awake () {
@@ -11,8 +12,10 @@ public class ball_script : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		// Movement logic goes here.
+		GetComponent<Rigidbody2D> ().AddRelativeForce (new Vector2 (0, constant_speed));
+//		GetComponent<Rigidbody2D>().velocity = constant_speed * (GetComponent<Rigidbody2D>().velocity.normalized);
 	}
 
 	void OnCollisionEnter2D (Collision2D other) {
@@ -29,7 +32,7 @@ public class ball_script : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D (Collider2D other) {
-		// Increment paddle and score, then destroy other
+		// die
 		if (other.gameObject.tag == "death_zone") {
 			master.gameObject.SendMessage ("die", true);
 			Destroy (gameObject);
