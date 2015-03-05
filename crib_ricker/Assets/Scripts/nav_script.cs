@@ -19,7 +19,5 @@ public class nav_script : MonoBehaviour {
 		} else {
 			info_menu.SetActive (true);
 		}
-		
 	}
-
 }

@@ -19,8 +19,15 @@ public class master_script : MonoBehaviour {
 	private float angle;
 	private Vector2 v2;
 
+	private bool paused;
+
 	public GameObject win_menu;
 	public GameObject lose_menu;
+
+	void Awake () {
+		//issues with restarting from pause, win, and lose menus
+		Time.timeScale = 1.0f;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -60,22 +67,27 @@ public class master_script : MonoBehaviour {
 		}
 	}
 
+	public void check_pause (GameObject pause_menu) {
+		if (paused) {
+			unpause (pause_menu);
+		} else {
+			pause (pause_menu);
+		}
+	}
+
 	// pause time, maybe add pause sound?
-	public void pause (GameObject pause_menu) {
+	void pause (GameObject pause_menu) {
 		// check and set timescale accordingly
-		if (Time.timeScale == 1.0f) {
-			Time.timeScale = 0.0f;
-		} else {
-			Time.timeScale = 1.0f;
-		}
-		// check pause_menu active status and set accordingly
-		//  this is done in separate check in case somehow the
-		//  timescale and pause_menu display ever got out of sync
-		if (pause_menu.activeSelf) {
-			pause_menu.SetActive (false);
-		} else {
-			pause_menu.SetActive (true);
-		}
+		paused = true;
+		Time.timeScale = 0.0f;
+		pause_menu.SetActive (true);
+	}
+
+	void unpause (GameObject pause_menu) {
+		// check and set timescale accordingly
+		paused = false;
+		Time.timeScale = 1.0f;
+		pause_menu.SetActive (false);
 	}
 	
 	// Add number of paddles
@@ -116,6 +128,7 @@ public class master_script : MonoBehaviour {
 	void die (bool dead) {
 		if (dead == true) {
 			Debug.Log("Game_Over");
+			lose ();
 		}
 	}
 
