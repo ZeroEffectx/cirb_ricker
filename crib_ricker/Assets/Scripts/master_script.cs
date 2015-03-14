@@ -9,6 +9,7 @@ public class master_script : MonoBehaviour {
 
 	public GameObject paddle;
 	private GameObject paddle_temp;
+	public GameObject ball;
 
 	public int score;
 	public int paddles;
@@ -18,6 +19,7 @@ public class master_script : MonoBehaviour {
 	private Vector2 mouse_pos;
 	private float angle;
 	private Vector2 v2;
+	private float current_size;
 
 	private bool paused;
 
@@ -27,6 +29,8 @@ public class master_script : MonoBehaviour {
 	void Awake () {
 		//issues with restarting from pause, win, and lose menus
 		Time.timeScale = 1.0f;
+
+		ball=GameObject.FindGameObjectWithTag ("ball");
 	}
 
 	// Use this for initialization
@@ -38,31 +42,42 @@ public class master_script : MonoBehaviour {
 	}
 
 	void Update () {
-		if (Input.GetMouseButtonDown (0)) {
-			// get position of the mouse on click
-			if (paddles > 0) {
-				mouse_down = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-				paddle_temp = Instantiate (paddle, mouse_down, Quaternion.identity) as GameObject;
-			}
-		}
-		if (Input.GetMouseButton (0)) {
-			if (paddles > 0) {
-				// get position of the mouse
-				mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
-				// calculate the angle between down press, and mouse position
-				//	then convert that to degree (-180 to 180)
-				v2 = mouse_pos - mouse_down;
-				angle = Mathf.Atan2 (v2.y, v2.x) * Mathf.Rad2Deg;
-				// update the rotation of the current paddle being placed to angle value.
-				if (gameObject != null) {
-					paddle_temp.transform.eulerAngles = new Vector3 (0, 0, angle);
+		if(ball.GetComponent<ball_script>().inPlay == true) {
+			if (Input.GetMouseButtonDown (0)) {
+				// get position of the mouse on click
+				if (paddles > 0) {
+					mouse_down = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+					paddle_temp = Instantiate (paddle, mouse_down, Quaternion.identity) as GameObject;
 				}
 			}
-		}
-		if (Input.GetMouseButtonUp (0)) {
-			if (paddles > 0) {
-				// remove a paddle, because we placed one
-				subtract_paddle (1);
+			if (Input.GetMouseButton (0)) {
+				if (paddles > 0) {
+					// get position of the mouse
+					mouse_pos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+					// calculate the angle between down press, and mouse position
+					//	then convert that to degree (-180 to 180)
+					v2 = mouse_pos - mouse_down;
+					angle = Mathf.Atan2 (v2.y, v2.x) * Mathf.Rad2Deg;
+					// update the rotation of the current paddle being placed to angle value.
+					if (gameObject != null) {
+						paddle_temp.transform.eulerAngles = new Vector3 (0, 0, angle);
+					}
+
+					current_size = Mathf.Sqrt((mouse_pos.x - mouse_down.x)*(mouse_pos.x - mouse_down.x) + (mouse_pos.y - mouse_down.y)*(mouse_pos.y - mouse_down.y));
+					if (current_size < 1) {
+						paddle_temp.transform.localScale = new Vector3(current_size, 1, 1);
+					}
+					else {
+						paddle_temp.transform.localScale = new Vector3(1,1,1);
+					}
+				}
+			}
+			if (Input.GetMouseButtonUp (0)) {
+				if (paddles > 0) {
+					paddle_temp.transform.localScale = new Vector3(1,1,1);
+					// remove a paddle, because we placed one
+					subtract_paddle (1);
+				}
 			}
 		}
 	}
